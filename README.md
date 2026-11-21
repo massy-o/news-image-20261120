@@ -12,16 +12,18 @@ that draws a one-page newspaper front page for Friday 20 November 2026
 and writes it to `/output/entry.png` (1024x1024 PNG, deterministic:
 two runs produce identical bytes).
 
-The page is a wire-service front page: a dated masthead, the day's six
-biggest stories in full on the left — the Shenzhen three-power peace
-declaration and Europe's "new Yalta" warning, Russian missiles and a
-drone coming down in NATO Poland, the World Court's genocide verdict
-on Myanmar, the AI selloff (S&P 500 -3.7%, Nikkei -5.1%), Anthropic's
-record $81bn IPO, and BepiColombo reaching Mercury — an eight-item
-"In brief" column with eight more stories, and a "day in numbers" box.
-Ten layout variants were rendered and compared; this wire format won
-on news breadth and legibility. All drawing (including the stroke
-typeface) is done from scratch in code; no image assets, no network.
+The page is a maximum-density newspaper front page: a dated masthead,
+the day's six biggest stories as cards — the Shenzhen three-power
+peace declaration and Europe's "new Yalta" warning, Russian missiles
+and a drone coming down in NATO Poland, the World Court's genocide
+verdict on Myanmar, the AI selloff (S&P 500 -3.7%, Nikkei -5.1%),
+Anthropic's record $81bn IPO, and BepiColombo reaching Mercury — each
+card with a summary and two extra fact lines, a "day in numbers"
+strip with ten figures, and thirty one-line briefs in four columns:
+58 verified facts in total, with no wasted pixels. Thirteen layout
+variants were rendered and compared; this newspaper-density format
+won on news breadth. All drawing (including the stroke typeface) is
+done from scratch in code; no image assets, no network.
 
 Run it:
 

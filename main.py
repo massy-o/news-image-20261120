@@ -368,83 +368,106 @@ def picto_mercury(cx, cy):
 
 
 # ---------------------------------------------------------------- scene
-# Wire-service front page: six full stories on the left, an eight-item
-# "in brief" column and a "day in numbers" box on the right.
-STORIES = [
-    ('DIPLOMACY', BLUE, 'THREE POWERS ONE TABLE',
-     "US, CHINA AND RUSSIA ISSUE A PEACE DECLARATION IN SHENZHEN. EUROPE WARNS OF A NEW YALTA."),
-    ('CONFLICT', RED, 'MISSILES HIT POLAND',
-     "MISSILES AND A DRONE COME DOWN IN NATO POLAND AS RUSSIA POUNDS KYIV BRIDGES, KILLING EIGHT."),
-    ('JUSTICE', PURPLE, 'GENOCIDE VERDICT',
-     "THE WORLD COURT RULES MYANMAR'S FORCES COMMITTED GENOCIDE AGAINST THE ROHINGYA."),
-    ('MARKETS', RED, 'AI SELLOFF HITS MARKETS',
-     "THE S&P 500 FALLS 3.7 PERCENT INTO CORRECTION; THE NIKKEI DIVES 5.1 PERCENT ON AI FEARS."),
-    ('BUSINESS', GREEN, 'RECORD $81BN IPO',
-     "ANTHROPIC LISTS AT $1.5 TRILLION IN THE BIGGEST IPO EVER. SHARES LEAP 17 PERCENT ON DEBUT."),
-    ('SCIENCE', TEAL, 'MERCURY, AT LAST',
-     "BEPICOLOMBO ENDS AN EIGHT-YEAR JOURNEY TO MERCURY FOR EUROPE AND JAPAN."),
-]
-BRIEF = [
-    'UK AND EU SIGN FOOD, CARBON AND YOUTH DEALS',
-    'GTA VI DRAWS RAVE REVIEWS ON RELEASE',
-    'COP31 DRAFT DEAL DROPS FOSSIL FUELS',
-    'MAGNITUDE 6.7 QUAKE IN CENTRAL PERU',
-    'US LOSES MEASLES ELIMINATION STATUS',
-    'LA JURY CONVICTS PALISADES FIRE ARSONIST',
-    'BAYER $7.25BN ROUNDUP SETTLEMENT APPROVED',
-    'ESTONIA MOVES TO CLOSE RUSSIA BORDER POSTS',
-]
-
-
+# Newspaper-density front page (V13): six story cards with fact
+# lines, a numbers strip, and thirty one-line briefs in four
+# columns. 58 verified facts from Friday 20 November 2026.
 def build():
     fill_rect(0, 0, W, H, PAPER)
-    line(40, 26, W - 40, 26, 3.2, INK)
-    draw_text('THE WORLD TODAY', W / 2, 40, 10.5, INK, sw=7.2, align='center')
-    fill_rect(40, 138, W - 80, 32, RED)
-    draw_text('FRIDAY 20 NOVEMBER 2026 \u2022 THE WHOLE DAY ON ONE PAGE', W / 2, 144, 3.6, (255, 255, 255), sw=2.5, align='center')
-    line(40, 184, W - 40, 184, 3.2, INK)
-    # left: six story rows
-    y = 200
-    for kicker, kcolor, head, sub in STORIES:
-        fill_rect(40, y, 600, 112, CARD)
-        line(40, y, 640, y, 1.4, INK)
-        line(40, y + 112, 640, y + 112, 1.4, INK)
-        line(40, y, 40, y + 112, 1.4, INK)
-        line(640, y, 640, y + 112, 1.4, INK)
-        fill_rect(40, y, 8, 112, kcolor)
-        draw_text(kicker, 62, y + 10, 2.9, kcolor, sw=2.0)
-        hu = min(4.6, 560 / (len(head) * ADV))
-        lines = wrap(head, hu, 560)
-        hy = y + 34
-        for ln in lines[:2]:
-            draw_text(ln, 62, hy, hu, INK, sw=hu * 0.66)
-            hy += hu * 7.0
-        draw_paragraph(sub, 62, hy + 2, 2.05, GRAY, 560, 15.5, sw=1.35)
-        y += 118
-    # right column: in brief + the day in numbers
-    rx, rw = 656, 328
-    fill_rect(rx, 200, rw, 436, INK)
-    draw_text('IN BRIEF', rx + 16, 214, 3.6, GOLD, sw=2.5)
-    by = 252
-    for item in BRIEF:
-        fill_rect(rx + 16, by + 5, 6, 6, GOLD)
-        draw_paragraph(item, rx + 32, by, 2.2, (240, 240, 235), rw - 48, 16.5, sw=1.45)
-        by += 48
-    ny = 652
-    fill_rect(rx, ny, rw, 250, CARD)
-    line(rx, ny, rx + rw, ny, 1.4, INK)
-    line(rx, ny + 250, rx + rw, ny + 250, 1.4, INK)
-    line(rx, ny, rx, ny + 250, 1.4, INK)
-    line(rx + rw, ny, rx + rw, ny + 250, 1.4, INK)
-    draw_text('THE DAY IN NUMBERS', rx + 16, ny + 12, 3.0, INK, sw=2.1)
-    nums = [('-3.7%', 'S&P 500 FALLS', RED), ('$81BN', 'ANTHROPIC IPO', GREEN),
-            ('6.7', 'PERU QUAKE', TEAL), ('8 YRS', 'TO MERCURY', PURPLE)]
-    yy = ny + 48
-    for big, small, col in nums:
-        draw_text(big, rx + 16, yy, 4.6, col, sw=3.2)
-        draw_text(small, rx + rw - 14, yy + 14, 1.9, GRAY, sw=1.3, align='right')
-        yy += 50
+    line(28, 16, W - 28, 16, 3.0, INK)
+    draw_text('ONE DAY', 28, 38, 2.2, GRAY, sw=1.5)
+    draw_text('ONE PAGE', 28, 56, 2.2, GRAY, sw=1.5)
+    draw_text('SIX STORIES', W - 28, 38, 2.2, GRAY, sw=1.5, align='right')
+    draw_text('30 BRIEFS', W - 28, 56, 2.2, GRAY, sw=1.5, align='right')
+    draw_text('THE WORLD TODAY', W / 2, 26, 8.6, INK, sw=5.9, align='center')
+    fill_rect(28, 88, W - 56, 26, RED)
+    draw_text('FRIDAY 20 NOVEMBER 2026 \u2022 THE WHOLE DAY ON ONE PAGE', W / 2, 93, 3.1, (255, 255, 255), sw=2.2, align='center')
+    line(28, 126, W - 28, 126, 1.3, INK)
+    line(28, 131, W - 28, 131, 2.8, INK)
 
+    def card(x, y, w, h, kicker, kcolor, head, sub, facts):
+        fill_rect(x, y, w, h, CARD)
+        line(x, y, x + w, y, 1.5, INK); line(x, y + h, x + w, y + h, 1.5, INK)
+        line(x, y, x, y + h, 1.5, INK); line(x + w, y, x + w, y + h, 1.5, INK)
+        fill_rect(x, y, w, 6, kcolor)
+        draw_text(kicker, x + 12, y + 12, 3.0, kcolor, sw=2.1)
+        inner = w - 24
+        longest = max(len(ln) for ln in head)
+        unit = min(5.0, inner / (longest * ADV))
+        hy = y + 40
+        for ln in head:
+            draw_text(ln, x + 12, hy, unit, INK, sw=unit * 0.67)
+            hy += unit * 7.2
+        draw_paragraph(sub, x + 12, hy + 4, 1.95, GRAY, inner, 15, sw=1.3)
+        line(x + 12, y + 200, x + w - 12, y + 200, 1.0, kcolor)
+        draw_text(facts[0], x + 12, y + 208, 1.8, INK, sw=1.25)
+        draw_text(facts[1], x + 12, y + 224, 1.8, INK, sw=1.25)
+
+    cards = [
+        ('CONFLICT', RED, ['MISSILES HIT', 'POLAND'],
+         "RUSSIAN MISSILES AND A DRONE COME DOWN IN NATO POLAND AS MOSCOW POUNDS KYIV'S DNIPRO BRIDGES, KILLING EIGHT AND WOUNDING 28.",
+         ['TWO MISSILES DOWN IN POLAND', 'A DRONE CAME DOWN TOO']),
+        ('DIPLOMACY', BLUE, ['THREE POWERS', 'ONE TABLE'],
+         "THE US, CHINA AND RUSSIA ISSUE A JOINT PEACE DECLARATION IN SHENZHEN. GERMANY'S MERZ WARNS EUROPE MUST NOT BE SIDELINED.",
+         ['TRUMP, XI AND PUTIN ATTEND', 'SUMMIT HELD IN SHENZHEN']),
+        ('BUSINESS', GREEN, ['RECORD', '$81BN IPO'],
+         "ANTHROPIC RAISES A RECORD $81BN AT A $1.5 TRILLION VALUATION, THE BIGGEST IPO EVER. SHARES LEAP 17 PERCENT ON DEBUT.",
+         ['LISTED ON NASDAQ', 'PRICED ON 19 NOVEMBER']),
+        ('JUSTICE', PURPLE, ['GENOCIDE', 'VERDICT'],
+         "THE WORLD COURT IN THE HAGUE RULES THAT MYANMAR'S SECURITY FORCES COMMITTED GENOCIDE AGAINST THE ROHINGYA PEOPLE.",
+         ['RULING FROM THE HAGUE', 'MYANMAR FORCES BLAMED']),
+        ('MARKETS', RED, ['AI SELLOFF', 'HITS MARKETS'],
+         "THE S&P 500 FALLS 3.7 PERCENT INTO CORRECTION TERRITORY AND THE NIKKEI DIVES 5.1 PERCENT AS AI FEARS HIT STOCKS.",
+         ['S&P ENTERS CORRECTION', 'NIKKEI DIVES 5.1 PERCENT']),
+        ('SCIENCE', TEAL, ['MERCURY,', 'AT LAST'],
+         "BEPICOLOMBO, A JOINT EUROPE-JAPAN MISSION, ENDS AN EIGHT-YEAR JOURNEY AND REACHES MERCURY, ITS TARGET PLANET.",
+         ['AN ESA-JAXA MISSION', 'EIGHT YEARS IN FLIGHT']),
+    ]
+    cw, gap = 312, 16
+    for i, s in enumerate(cards):
+        x = 28 + (i % 3) * (cw + gap)
+        y = 144 + (i // 3) * 252
+        card(x, y, cw, 240, *s)
+
+    # numbers strip
+    fill_rect(28, 646, W - 56, 52, INK)
+    draw_text('-3.7% S&P 500 \u2022 -5.1% NIKKEI \u2022 $81BN RAISED \u2022 $1.5TN VALUE \u2022 +17% ON DEBUT',
+              W / 2, 653, 1.95, (240, 240, 235), sw=1.35, align='center')
+    draw_text('6.7 PERU QUAKE \u2022 8 DEAD IN KYIV \u2022 100K YOUTH PLACES \u2022 $7.25BN BAYER DEAL \u2022 34 DEAD IN HAITI',
+              W / 2, 675, 1.95, GOLD, sw=1.35, align='center')
+
+    # brief zone: 30 items, four columns
+    fill_rect(28, 708, W - 56, 30, INK)
+    draw_text('IN BRIEF \u2022 THIRTY MORE FACTS FROM FRIDAY', 44, 714, 2.9, GOLD, sw=2.0)
+    briefs = [
+        'WARSAW: DELIBERATE PROVOCATION', 'NATO: GRAVE AIRSPACE VIOLATION',
+        'THREE DNIPRO BRIDGES STRUCK', 'KYIV STRIKES: 8 KILLED',
+        '28 WOUNDED IN KYIV STRIKES', 'POLAND IS A NATO MEMBER',
+        'JOINT PEACE DECLARATION ISSUED', 'MERZ: NO DEAL WITHOUT EUROPE',
+        'EUROPE WARNS OF A NEW YALTA', 'VALUED AT $1.5 TRILLION',
+        'BIGGEST IPO IN HISTORY', 'SHARES LEAP 17 PERCENT',
+        'AI FEARS DRIVE THE SELLOFF', 'S&P 500 FALLS 3.7 PERCENT',
+        'UK-EU SIGN FOOD TRADE DEAL', 'UK-EU LINK CARBON MARKETS',
+        'YOUTH MOBILITY AGREED', '100K PLACES, AGES 18 TO 31',
+        'COP31 DRAFT DROPS FOSSIL FUELS', 'COP31 TALKS OVERRUN IN ANTALYA',
+        'MAGNITUDE 6.7 IN CENTRAL PERU', 'US LOSES MEASLES-FREE STATUS',
+        'LA JURY CONVICTS ARSONIST', 'RINDERKNECHT STARTED THE FIRE',
+        'BAYER $7.25BN ROUNDUP DEAL', 'SELLOFF SPREADS WORLDWIDE',
+        '34 KILLED IN HAITI', 'ESTONIA SHUTS RUSSIA BORDER',
+        'GTA VI RELEASED TO RAVES', 'GTA VI OUT SINCE 19 NOVEMBER',
+    ]
+    cols_x = [28, 272, 516, 760]
+    spans = [(0, 8), (8, 16), (16, 23), (23, 30)]
+    for c, (a, b) in enumerate(spans):
+        for r, item in enumerate(briefs[a:b]):
+            x = cols_x[c]
+            y = 750 + r * 28
+            fill_rect(x + 2, y + 3, 5, 5, RED)
+            lines = wrap(item, 1.72, 218)
+            for j, ln in enumerate(lines[:2]):
+                draw_text(ln, x + 13, y + j * 14, 1.72, INK, sw=1.2)
+    line(28, 984, W - 28, 984, 1.6, INK)
+    draw_text('THE WORLD TODAY \u2022 FRIDAY 20 NOVEMBER 2026 \u2022 COMPILED FROM THE DAY\'S WIRE REPORTS \u2022 PAGE 1 OF 1',
+              W / 2, 991, 1.55, GRAY, sw=1.1, align='center')
 
 # ---------------------------------------------------------------- output
 def downscale():
