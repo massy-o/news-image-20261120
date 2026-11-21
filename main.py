@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Sum up 20 November 2026's world news in one image.
 
-Pure Python 3 standard library. Draws a one-page newspaper front page
-(masthead, six illustrated story panels, an "also today" ticker) and
-writes it as a deterministic PNG to /output/entry.png.
+Pure Python 3 standard library. Draws a wire-service front page
+(masthead with the date, six full stories, an eight-item "in brief"
+column and a "day in numbers" box) and writes it as a deterministic
+PNG to /output/entry.png. The drawing engine, stroke typeface and
+pictograms are all hand-built in this file; no assets, no network.
 """
 import math
 import os
@@ -366,63 +368,82 @@ def picto_mercury(cx, cy):
 
 
 # ---------------------------------------------------------------- scene
-def panel(x, y, w, h, kicker, kcolor, picto, headline_lines, sub):
-    fill_rect(x, y, w, h, CARD)
-    line(x, y, x + w, y, 1.6, INK)
-    line(x, y + h, x + w, y + h, 1.6, INK)
-    line(x, y, x, y + h, 1.6, INK)
-    line(x + w, y, x + w, y + h, 1.6, INK)
-    pad = 15
-    draw_text(kicker, x + pad, y + 12, 3.3, kcolor, sw=2.3)
-    line(x + pad, y + 40, x + w - pad, y + 40, 1.3, kcolor)
-    picto(x + w / 2, y + 84)
-    inner = w - 2 * pad
-    longest = max(len(ln) for ln in headline_lines)
-    unit = min(5.3, inner / (longest * ADV))
-    hy = y + 132
-    for ln in headline_lines:
-        draw_text(ln, x + pad, hy, unit, INK, sw=unit * 0.68)
-        hy += unit * 7.2
-    draw_paragraph(sub, x + pad, hy + 7, 2.3, GRAY, inner, 17.5, sw=1.5)
+# Wire-service front page: six full stories on the left, an eight-item
+# "in brief" column and a "day in numbers" box on the right.
+STORIES = [
+    ('DIPLOMACY', BLUE, 'THREE POWERS ONE TABLE',
+     "US, CHINA AND RUSSIA ISSUE A PEACE DECLARATION IN SHENZHEN. EUROPE WARNS OF A NEW YALTA."),
+    ('CONFLICT', RED, 'MISSILES HIT POLAND',
+     "MISSILES AND A DRONE COME DOWN IN NATO POLAND AS RUSSIA POUNDS KYIV BRIDGES, KILLING EIGHT."),
+    ('JUSTICE', PURPLE, 'GENOCIDE VERDICT',
+     "THE WORLD COURT RULES MYANMAR'S FORCES COMMITTED GENOCIDE AGAINST THE ROHINGYA."),
+    ('MARKETS', RED, 'AI SELLOFF HITS MARKETS',
+     "THE S&P 500 FALLS 3.7 PERCENT INTO CORRECTION; THE NIKKEI DIVES 5.1 PERCENT ON AI FEARS."),
+    ('BUSINESS', GREEN, 'RECORD $81BN IPO',
+     "ANTHROPIC LISTS AT $1.5 TRILLION IN THE BIGGEST IPO EVER. SHARES LEAP 17 PERCENT ON DEBUT."),
+    ('SCIENCE', TEAL, 'MERCURY, AT LAST',
+     "BEPICOLOMBO ENDS AN EIGHT-YEAR JOURNEY TO MERCURY FOR EUROPE AND JAPAN."),
+]
+BRIEF = [
+    'UK AND EU SIGN FOOD, CARBON AND YOUTH DEALS',
+    'GTA VI DRAWS RAVE REVIEWS ON RELEASE',
+    'COP31 DRAFT DEAL DROPS FOSSIL FUELS',
+    'MAGNITUDE 6.7 QUAKE IN CENTRAL PERU',
+    'US LOSES MEASLES ELIMINATION STATUS',
+    'LA JURY CONVICTS PALISADES FIRE ARSONIST',
+    'BAYER $7.25BN ROUNDUP SETTLEMENT APPROVED',
+    'ESTONIA MOVES TO CLOSE RUSSIA BORDER POSTS',
+]
 
 
 def build():
     fill_rect(0, 0, W, H, PAPER)
-    # masthead
-    line(40, 30, W - 40, 30, 3.2, INK)
-    draw_text('THE DAY THE WORLD CHANGED, IN ONE PAGE', W / 2, 44, 3.1, GRAY, sw=2.0, align='center')
-    draw_text('THE WORLD TODAY', W / 2, 74, 12.6, INK, sw=8.6, align='center')
-    fill_rect(40, 168, W - 80, 34, RED)
-    draw_text('FRIDAY 20 NOVEMBER 2026', W / 2, 174, 3.9, (255, 255, 255), sw=2.7, align='center')
-    line(40, 216, W - 40, 216, 1.4, INK)
-    line(40, 222, W - 40, 222, 3.2, INK)
-
-    panels = [
-        ('DIPLOMACY', BLUE, picto_summit, ['THREE POWERS', 'ONE TABLE'],
-         "US, CHINA AND RUSSIA ISSUE A PEACE DECLARATION IN SHENZHEN. EUROPE WARNS OF A NEW YALTA."),
-        ('CONFLICT', RED, picto_missile, ['MISSILES HIT', 'POLAND'],
-         "MISSILES AND A DRONE COME DOWN IN NATO POLAND AS RUSSIA POUNDS KYIV BRIDGES, KILLING EIGHT."),
-        ('JUSTICE', PURPLE, picto_court, ['GENOCIDE', 'VERDICT'],
-         "THE WORLD COURT RULES MYANMAR'S FORCES COMMITTED GENOCIDE AGAINST THE ROHINGYA."),
-        ('MARKETS', RED, lambda cx, cy: picto_chart(cx, cy, up=False), ['AI SELLOFF', 'HITS MARKETS'],
-         "THE S&P 500 FALLS 3.7 PERCENT INTO CORRECTION; THE NIKKEI DIVES 5.1 PERCENT ON AI FEARS."),
-        ('BUSINESS', GREEN, picto_ipo, ['RECORD', '$81BN IPO'],
-         "ANTHROPIC LISTS AT $1.5 TRILLION IN THE BIGGEST IPO EVER. SHARES LEAP 17 PERCENT ON DEBUT."),
-        ('SCIENCE', TEAL, picto_mercury, ['MERCURY,', 'AT LAST'],
-         "BEPICOLOMBO ENDS AN EIGHT-YEAR JOURNEY TO MERCURY FOR EUROPE AND JAPAN."),
-    ]
-    pw, ph, gap, x0, y0 = 302, 324, 18, 40, 240
-    for i, (kick, kc, pic, head, sub) in enumerate(panels):
-        x = x0 + (i % 3) * (pw + gap)
-        y = y0 + (i // 3) * (ph + gap)
-        panel(x, y, pw, ph, kick, kc, pic, head, sub)
-
-    # ticker
-    ty = 918
-    fill_rect(40, ty, W - 80, 72, INK)
-    draw_text('ALSO TODAY', 58, ty + 8, 3.0, GOLD, sw=2.1)
-    draw_text('UK AND EU SIGN FOOD, CARBON AND YOUTH DEALS \u2022 GTA VI DRAWS RAVE REVIEWS', 58, ty + 32, 2.15, (240, 240, 235), sw=1.4)
-    draw_text('COP31 DRAFT DROPS FOSSIL FUELS \u2022 6.7 QUAKE IN PERU \u2022 US LOSES MEASLES-FREE STATUS', 58, ty + 53, 2.15, (240, 240, 235), sw=1.4)
+    line(40, 26, W - 40, 26, 3.2, INK)
+    draw_text('THE WORLD TODAY', W / 2, 40, 10.5, INK, sw=7.2, align='center')
+    fill_rect(40, 138, W - 80, 32, RED)
+    draw_text('FRIDAY 20 NOVEMBER 2026 \u2022 THE WHOLE DAY ON ONE PAGE', W / 2, 144, 3.6, (255, 255, 255), sw=2.5, align='center')
+    line(40, 184, W - 40, 184, 3.2, INK)
+    # left: six story rows
+    y = 200
+    for kicker, kcolor, head, sub in STORIES:
+        fill_rect(40, y, 600, 112, CARD)
+        line(40, y, 640, y, 1.4, INK)
+        line(40, y + 112, 640, y + 112, 1.4, INK)
+        line(40, y, 40, y + 112, 1.4, INK)
+        line(640, y, 640, y + 112, 1.4, INK)
+        fill_rect(40, y, 8, 112, kcolor)
+        draw_text(kicker, 62, y + 10, 2.9, kcolor, sw=2.0)
+        hu = min(4.6, 560 / (len(head) * ADV))
+        lines = wrap(head, hu, 560)
+        hy = y + 34
+        for ln in lines[:2]:
+            draw_text(ln, 62, hy, hu, INK, sw=hu * 0.66)
+            hy += hu * 7.0
+        draw_paragraph(sub, 62, hy + 2, 2.05, GRAY, 560, 15.5, sw=1.35)
+        y += 118
+    # right column: in brief + the day in numbers
+    rx, rw = 656, 328
+    fill_rect(rx, 200, rw, 436, INK)
+    draw_text('IN BRIEF', rx + 16, 214, 3.6, GOLD, sw=2.5)
+    by = 252
+    for item in BRIEF:
+        fill_rect(rx + 16, by + 5, 6, 6, GOLD)
+        draw_paragraph(item, rx + 32, by, 2.2, (240, 240, 235), rw - 48, 16.5, sw=1.45)
+        by += 48
+    ny = 652
+    fill_rect(rx, ny, rw, 250, CARD)
+    line(rx, ny, rx + rw, ny, 1.4, INK)
+    line(rx, ny + 250, rx + rw, ny + 250, 1.4, INK)
+    line(rx, ny, rx, ny + 250, 1.4, INK)
+    line(rx + rw, ny, rx + rw, ny + 250, 1.4, INK)
+    draw_text('THE DAY IN NUMBERS', rx + 16, ny + 12, 3.0, INK, sw=2.1)
+    nums = [('-3.7%', 'S&P 500 FALLS', RED), ('$81BN', 'ANTHROPIC IPO', GREEN),
+            ('6.7', 'PERU QUAKE', TEAL), ('8 YRS', 'TO MERCURY', PURPLE)]
+    yy = ny + 48
+    for big, small, col in nums:
+        draw_text(big, rx + 16, yy, 4.6, col, sw=3.2)
+        draw_text(small, rx + rw - 14, yy + 14, 1.9, GRAY, sw=1.3, align='right')
+        yy += 50
 
 
 # ---------------------------------------------------------------- output
